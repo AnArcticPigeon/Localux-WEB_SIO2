@@ -42,6 +42,9 @@ class Utilisateur
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'leClient', orphanRemoval: true)]
     private Collection $reservations;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $sel = null;
+
     public function __construct()
     {
         $this->ancienMdp = new ArrayCollection();
@@ -169,6 +172,18 @@ class Utilisateur
                 $reservation->setLeClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSel(): ?string
+    {
+        return $this->sel;
+    }
+
+    public function setSel(?string $sel): static
+    {
+        $this->sel = $sel;
 
         return $this;
     }

@@ -30,14 +30,14 @@ class Controle
     private ?Utilisateur $employeVerif = null;
 
     /**
-     * @var Collection<int, Piece>
+     * @var Collection<int, Verification>
      */
-    #[ORM\ManyToMany(targetEntity: Piece::class)]
-    private Collection $idVerification;
+    #[ORM\OneToMany(targetEntity: Verification::class, mappedBy: 'idControle', orphanRemoval: true)]
+    private Collection $verifications;
 
     public function __construct()
     {
-        $this->idVerification = new ArrayCollection();
+        $this->verifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -94,25 +94,31 @@ class Controle
     }
 
     /**
-     * @return Collection<int, Piece>
+     * @return Collection<int, Verification>
      */
-    public function getIdVerification(): Collection
+    public function getVerifications(): Collection
     {
-        return $this->idVerification;
+        return $this->verifications;
     }
 
-    public function addIdVerification(Piece $idVerification): static
+    public function addVerification(Verification $verification): static
     {
-        if (!$this->idVerification->contains($idVerification)) {
-            $this->idVerification->add($idVerification);
+        if (!$this->verifications->contains($verification)) {
+            $this->verifications->add($verification);
+            $verification->setIdControle($this);
         }
 
         return $this;
     }
 
-    public function removeIdVerification(Piece $idVerification): static
+    public function removeVerification(Verification $verification): static
     {
-        $this->idVerification->removeElement($idVerification);
+        if ($this->verifications->removeElement($verification)) {
+            // set the owning side to null (unless already changed)
+            if ($verification->getIdControle() === $this) {
+                $verification->setIdControle(null);
+            }
+        }
 
         return $this;
     }
