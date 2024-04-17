@@ -6,25 +6,41 @@ use App\Repository\ChauffeurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ChauffeurRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => 'chauffeur:item']),
+        new GetCollection(normalizationContext: ['groups' => 'chauffeur:list'])
+    ],
+    order: ['nom' => 'ASC', 'prenom' => 'ASC'],
+    paginationEnabled: false,
+)]
 class Chauffeur
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['chauffeur:list', 'chauffeur:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['chauffeur:list', 'chauffeur:item'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['chauffeur:list', 'chauffeur:item'])]
     private ?string $prenom = null;
 
     /**
      * @var Collection<int, ReservationChauffeur>
      */
     #[ORM\OneToMany(targetEntity: ReservationChauffeur::class, mappedBy: 'leChauffeur', orphanRemoval: true)]
+    #[Groups(['chauffeur:list', 'chauffeur:item'])]
     private Collection $reservationChauffeurs;
 
     public function __construct()

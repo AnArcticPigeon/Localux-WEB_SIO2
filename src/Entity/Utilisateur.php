@@ -6,44 +6,69 @@ use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => 'utilisateur:item']),
+        new GetCollection(normalizationContext: ['groups' => 'utilisateur:list'])
+    ],
+    order: ['nom' => 'ASC', 'prenom' => 'ASC'],
+    paginationEnabled: false,
+)]
 class Utilisateur
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['utilisateur:list', 'utilisateur:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['utilisateur:list', 'utilisateur:item'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['utilisateur:list', 'utilisateur:item'])]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['utilisateur:list', 'utilisateur:item'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['utilisateur:list', 'utilisateur:item'])]
     private ?string $login = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['utilisateur:list', 'utilisateur:item'])]
     private ?string $mdp = null;
 
     /**
      * @var Collection<int, AncienMdp>
      */
     #[ORM\OneToMany(targetEntity: AncienMdp::class, mappedBy: 'utilisateur', orphanRemoval: true)]
+    #[Groups(['utilisateur:list', 'utilisateur:item'])]
     private Collection $ancienMdp;
 
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'leClient', orphanRemoval: true)]
+    #[Groups(['utilisateur:list', 'utilisateur:item'])]
     private Collection $reservations;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['utilisateur:list', 'utilisateur:item'])]
     private ?string $sel = null;
+
+    #[ORM\Column(length: 32, nullable: true)]
+    #[Groups(['utilisateur:list', 'utilisateur:item'])]
+    private ?string $codeOtp = null;
 
     public function __construct()
     {
@@ -184,6 +209,18 @@ class Utilisateur
     public function setSel(?string $sel): static
     {
         $this->sel = $sel;
+
+        return $this;
+    }
+
+    public function getCodeOtp(): ?string
+    {
+        return $this->codeOtp;
+    }
+
+    public function setCodeOtp(?string $codeOtp): static
+    {
+        $this->codeOtp = $codeOtp;
 
         return $this;
     }

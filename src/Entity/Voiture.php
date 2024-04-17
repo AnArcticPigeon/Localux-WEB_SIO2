@@ -6,28 +6,44 @@ use App\Repository\VoitureRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: VoitureRepository::class)]
+#[ApiResource(
+        operations: [
+            new Get(normalizationContext: ['groups' => 'voiture:item']),
+            new GetCollection(normalizationContext: ['groups' => 'voiture:list'])
+        ],
+        paginationEnabled: false,
+    )]
 class Voiture
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['voiture:list', 'voiture:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['voiture:list', 'voiture:item'])]
     private ?string $immatriculation = null;
 
     #[ORM\Column]
+    #[Groups(['voiture:list', 'voiture:item'])]
     private ?int $kilometrage = null;
 
     #[ORM\ManyToOne(inversedBy: 'voitures')]
+    #[Groups(['voiture:list', 'voiture:item'])]
     private ?Modele $leModele = null;
 
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'laVoiture', orphanRemoval: true)]
+    #[Groups(['voiture:list', 'voiture:item'])]
     private Collection $reservations;
 
     public function __construct()

@@ -6,34 +6,52 @@ use App\Repository\ModeleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ModeleRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => 'modele:item']),
+        new GetCollection(normalizationContext: ['groups' => 'modele:list'])
+    ],
+    order: ['libelle' => 'ASC'],
+    paginationEnabled: false,
+)]
 class Modele
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['modele:list', 'modele:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['modele:list', 'modele:item'])]
     private ?string $libelle = null;
 
     #[ORM\Column]
+    #[Groups(['modele:list', 'modele:item'])]
     private ?float $prixKiloSup = null;
 
     #[ORM\Column]
+    #[Groups(['modele:list', 'modele:item'])]
     private ?float $prixHeure = null;
 
     /**
      * @var Collection<int, Voiture>
      */
     #[ORM\OneToMany(targetEntity: Voiture::class, mappedBy: 'leModele')]
+    #[Groups(['modele:list', 'modele:item'])]
     private Collection $voitures;
 
     /**
      * @var Collection<int, Piece>
      */
     #[ORM\ManyToMany(targetEntity: Piece::class, inversedBy: 'modeles')]
+    #[Groups(['modele:list', 'modele:item'])]
     private Collection $lesPieces;
 
     public function __construct()
@@ -136,5 +154,4 @@ class Modele
 
         return $this;
     }
-
 }

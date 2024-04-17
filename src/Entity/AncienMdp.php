@@ -24,9 +24,6 @@ class AncienMdp
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
-    #[ORM\Column(length: 32, nullable: true)]
-    private ?string $otpCode = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -64,18 +61,6 @@ class AncienMdp
     public function setUtilisateur(?Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
-
-        return $this;
-    }
-
-    public function getOtpCode(): ?string
-    {
-        return $this->otpCode;
-    }
-
-    public function setOtpCode(?string $otpCode): static
-    {
-        $this->otpCode = $otpCode;
 
         return $this;
     }
