@@ -35,6 +35,12 @@ class Controle
     #[ORM\OneToMany(targetEntity: Verification::class, mappedBy: 'idControle', orphanRemoval: true)]
     private Collection $verifications;
 
+    #[ORM\Column]
+    private ?int $kilometrageRetour = null;
+
+    #[ORM\Column]
+    private ?int $kilometrageEffectue = null;
+
     public function __construct()
     {
         $this->verifications = new ArrayCollection();
@@ -119,6 +125,30 @@ class Controle
                 $verification->setIdControle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getKilometrageRetour(): ?int
+    {
+        return $this->kilometrageRetour;
+    }
+
+    public function setKilometrageRetour(int $kilometrageRetour): static
+    {
+        $this->kilometrageRetour = $kilometrageRetour;
+
+        return $this;
+    }
+
+    public function getKilometrageEffectue(): ?int
+    {
+        return $this->kilometrageEffectue;
+    }
+
+    public function setKilometrageEffectue(int $kilometrageEffectue): static
+    {
+        $this->kilometrageEffectue = $kilometrageEffectue;
 
         return $this;
     }

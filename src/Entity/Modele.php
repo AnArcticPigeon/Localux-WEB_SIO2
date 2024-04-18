@@ -29,7 +29,7 @@ class Modele
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['modele:list', 'modele:item'])]
+    #[Groups(['modele:list', 'modele:item', 'voiture:list', 'voiture:item'])]
     private ?string $libelle = null;
 
     #[ORM\Column]

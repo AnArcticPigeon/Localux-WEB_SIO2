@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Creation de compte
+{% endblock %}
+
+{% block body %}
+	{{ form_start(form) }}
+	{{ form_row(form.nom) }}
+	{{ form_row(form.prenom) }}
+	{{ form_row(form.email) }}
+	{{ form_row(form.mdp) }}
+	<button class="btn btn-primary" type="submit" name="btnSauvegarder">Créer le compte</button>
+	{{ form_end(form) }}
+{% endblock %}
