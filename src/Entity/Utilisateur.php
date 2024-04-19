@@ -9,7 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ApiResource(
@@ -20,13 +23,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
     order: ['nom' => 'ASC', 'prenom' => 'ASC'],
     paginationEnabled: false,
 )]
-class Utilisateur
+#[UniqueEntity('email')]
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['utilisateur:list', 'utilisateur:item'])]
     private ?int $id = null;
+
+    #[ORM\Column(type: "json")]
+    private $roles = [];
 
     #[ORM\Column(length: 255)]
     #[Groups(['utilisateur:list', 'utilisateur:item'])]
@@ -36,7 +43,7 @@ class Utilisateur
     #[Groups(['utilisateur:list', 'utilisateur:item'])]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
     #[Groups(['utilisateur:list', 'utilisateur:item'])]
     private ?string $email = null;
 
@@ -224,4 +231,43 @@ class Utilisateur
 
         return $this;
     }
+
+    public function getPassword(): ?string
+    {
+        return $this->mdp;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->mdp = $password;
+        return $this;
+    }
+
+    //partie Authentification / permisions
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+
 }

@@ -27,6 +27,9 @@ class Forfait
     #[ORM\OneToMany(targetEntity: ReservationForfait::class, mappedBy: 'leForfait', orphanRemoval: true)]
     private Collection $reservationForfaits;
 
+    #[ORM\Column(length: 255)]
+    private ?string $libelle = null;
+
     public function __construct()
     {
         $this->reservationForfaits = new ArrayCollection();
@@ -87,6 +90,18 @@ class Forfait
                 $reservationForfait->setLeForfait(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLibelle(): ?string
+    {
+        return $this->libelle;
+    }
+
+    public function setLibelle(string $libelle): static
+    {
+        $this->libelle = $libelle;
 
         return $this;
     }

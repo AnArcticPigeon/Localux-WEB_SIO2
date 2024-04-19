@@ -54,6 +54,9 @@ class Modele
     #[Groups(['modele:list', 'modele:item'])]
     private Collection $lesPieces;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
+
     public function __construct()
     {
         $this->voitures = new ArrayCollection();
@@ -151,6 +154,18 @@ class Modele
     public function removeLesPiece(Piece $lesPiece): static
     {
         $this->lesPieces->removeElement($lesPiece);
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
 
         return $this;
     }

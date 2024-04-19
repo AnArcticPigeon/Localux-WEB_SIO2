@@ -4,10 +4,11 @@ namespace App\Form;
 
 use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class InscritpionType extends AbstractType
+class InscriptionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -15,7 +16,8 @@ class InscritpionType extends AbstractType
             ->add('nom')
             ->add('prenom')
             ->add('email')
-            ->add('mdp')
+            ->add('mdp', PasswordType::class, [
+                'label' => 'Mot de Passe'])
         ;
     }
 
